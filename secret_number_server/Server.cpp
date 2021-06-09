@@ -1,4 +1,7 @@
 #include "Server.h"
+#include <QJsonDocument>
+#include <QJsonObject>
+#include "MsgFactory.h"
 
 Server::Server(uint16_t port)
          :m_Port(port)
@@ -50,12 +53,22 @@ void Server::onPlayerConnect()
         name="auto";
     }
 
-    m_Clients[socket] = *m_PlayerManager.addPlayer(ip, socket->peerPort());
+    PlayerInfo* player_ptr = m_PlayerManager.addPlayer(ip, socket->peerPort());
 
+    if(player_ptr == nullptr)
+    {
+        socket->sendTextMessage(MsgFactory::createErrorMsg(RC_SERVER_IS_FULL));
+        socket->close();
+        return;
+    }
+
+    m_Clients[socket] = *player_ptr;
     m_Clients[socket].setName(name);
+    socket->sendTextMessage(MsgFactory::createAcceptedConnectionMsg(m_Clients[socket].getId(), m_Clients[socket].getLastLogin()));
 
 
     qInfo() << "[2021/04/09 13:29:22] [join] " << name << " has joined the server (" << m_Clients[socket].getId() << ":" << ip << ")";
+
 
 }
 
@@ -67,7 +80,60 @@ void Server::onProcessMsg(QString msg)
 
     if (client)
     {
-        client->sendTextMessage(msg);
+        QJsonDocument jsonResponse = QJsonDocument::fromJson(msg.toUtf8());
+
+        QJsonObject jsonObject = jsonResponse.object();
+
+        if(!jsonObject.contains("type"))
+        {
+            client->sendTextMessage(MsgFactory::createErrorMsg(RC_INVALID_REQUEST));
+            return;
+        }
+
+        if(!jsonObject["type"].isDouble())
+        {
+            client->sendTextMessage(MsgFactory::createErrorMsg(RC_INVALID_REQUEST));
+            return;
+        }
+
+        switch((int16_t)jsonObject["type"].toDouble())
+        {
+            case REQUEST_NEW_GAME:
+            {
+                GameInfo* game = m_GameManager.createGame(m_Clients[client].getId());
+                if(game == nullptr)
+                {
+                    client->sendTextMessage(MsgFactory::createErrorMsg(RC_CANNOT_CREATE_GAME));
+                }
+                else
+                {
+                    client->sendTextMessage(MsgFactory::createGameCreatedMsg(game->getGameId(), game->getPlayerId(), game->getStartTime()));
+                }
+                break;
+            }
+            case REQUEST_ANSWER:
+            {
+                //TODO: send response on answer
+                break;
+            }
+            case REQUEST_END_GAME:
+            {
+                //TODO: send end game resonse
+                break;
+            }
+            case REQUEST_QUIT:
+            {
+                //TODO: create end game on player close app
+                break;
+            }
+            default:
+            {
+                client->sendTextMessage(MsgFactory::createErrorMsg(RC_INVALID_REQUEST));
+                return;
+            }
+        }
+
+
     }
 }
 
@@ -86,8 +152,6 @@ void Server::onProcessBinaryMsg(QByteArray msg)
 
 void Server::onPlayerDisconnect()
 {
-
-
     QWebSocket *client = qobject_cast<QWebSocket *>(sender());
 
     if (client)
@@ -98,6 +162,11 @@ void Server::onPlayerDisconnect()
 
         m_PlayerManager.removePlayer(m_Clients[client].getId());
         m_Clients.erase(client);
+        GameInfo * game = m_GameManager.getPlayerGame(m_Clients[client].getId());
+        if(game)
+        {
+            m_GameManager.removeGame(game->getGameId());
+        }
         client->deleteLater();
     }
 }

@@ -9,6 +9,9 @@ CONFIG -= app_bundle
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+        GameInfo.cpp \
+        GameManager.cpp \
+        MsgFactory.cpp \
         PlayerInfo.cpp \
         PlayerManager.cpp \
         Server.cpp \
@@ -20,6 +23,10 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    GameInfo.h \
+    GameManager.h \
+    MsgFactory.h \
+    MsgTypes.h \
     PlayerInfo.h \
     PlayerManager.h \
     Server.h

@@ -10,11 +10,14 @@ CONFIG += c++11
 
 SOURCES += \
     GameClient.cpp \
+    MsgFactory.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     GameClient.h \
+    MsgFactory.h \
+    MsgTypes.h \
     mainwindow.h
 
 FORMS += \

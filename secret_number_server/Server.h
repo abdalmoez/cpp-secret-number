@@ -10,6 +10,7 @@
 #include <QDebug>
 
 #include "PlayerManager.h"
+#include "GameManager.h"
 
 
 class Server: public QObject
@@ -37,6 +38,7 @@ private:
     QWebSocketServer   m_WebSocketServer;
     std::map<QWebSocket *, PlayerInfo> m_Clients;
     PlayerManager                      m_PlayerManager;
+    GameManager                        m_GameManager;
 };
 
 #endif // SERVER_H
