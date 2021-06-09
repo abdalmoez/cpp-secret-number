@@ -4,10 +4,12 @@
 #include <QtWebSockets/qwebsocket.h>
 #include <QHostAddress>
 #include <QMessageBox>
+#include <sstream>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , client(nullptr)
 {
     ui->setupUi(this);
 }
@@ -30,6 +32,20 @@ void MainWindow::on_pushButton_clicked()
         return;
     }
 
-    //TODO: Connect to server
+    if(client != nullptr)
+    {
+        QMessageBox messageBox;
+        messageBox.critical(0,"Error","Client already connected to the server!");
+        messageBox.show();
+        return;
+    }
+
+    QString urlstr = "ws://" + ipstr + ":" + ui->inputPort->text();
+    QUrl url(urlstr);
+    client = new GameClient(url);
+
+    qInfo() << "Connecting to "<<urlstr;
+
+    QObject::connect(client, &GameClient::closeApp, this, &MainWindow::close);
 }
 
