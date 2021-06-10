@@ -113,13 +113,26 @@ void GameClient::onMsgReceived(QString msg)
         case RC_INVALID_ANSWER:
         {
             QMessageBox messageBox;
+            QString state = "";
+            if(jsonObject.contains("state") && jsonObject["state"].isDouble())
+            {
+                if(((int32_t)jsonObject["state"].toDouble()) == -1)
+                {
+                    state = "\nThe secret number is less than your value.";
+                }
+                else if(((int32_t)jsonObject["state"].toDouble()) == 1)
+                {
+                    state = "\nThe secret number is high than your value.";
+                }
+            }
+
             if(jsonObject.contains("total_tries") && jsonObject["total_tries"].isDouble())
             {
-                messageBox.information(0,"Server","Invalid answer! (total tries: " + QString::number(jsonObject["total_tries"].toDouble()) +")");
+                messageBox.information(0,"Server","Invalid answer! (total tries: " + QString::number(jsonObject["total_tries"].toDouble()) +")"+state);
             }
             else
             {
-                messageBox.information(0,"Server","Invalid answer!");
+                messageBox.information(0,"Server","Invalid answer!"+state);
             }
             messageBox.show();
 

@@ -131,7 +131,7 @@ void Server::onProcessMsg(QString msg)
                 }
                 uint32_t playerid = (uint32_t)jsonObject["playerid"].toDouble();
                 uint32_t gameid = (uint32_t)jsonObject["gameid"].toDouble();
-                uint32_t answer = (uint32_t)jsonObject["answer"].toDouble();
+                int32_t answer = (int32_t)jsonObject["answer"].toDouble();
 
                 if(gameid == INVALID_GAME_ID)
                 {
@@ -163,7 +163,15 @@ void Server::onProcessMsg(QString msg)
                 }
                 else if(game->getNbTries() < MAX_TRIES)
                 {
-                    client->sendTextMessage(MsgFactory::createInvalidAnswerMsg(gameid, playerid, game->getNbTries()));
+                    if(game->getSecretNumber() < answer)
+                    {
+                        client->sendTextMessage(MsgFactory::createInvalidAnswerMsg(gameid, playerid, game->getNbTries(), -1));
+                    }
+                    else
+                    {
+                        client->sendTextMessage(MsgFactory::createInvalidAnswerMsg(gameid, playerid, game->getNbTries(), 1));
+                    }
+
                 }
                 else
                 {
