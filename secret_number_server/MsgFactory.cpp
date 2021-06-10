@@ -27,33 +27,35 @@ QString MsgFactory::createInvalidAnswerMsg(uint32_t gameid, uint32_t playerid, u
 
     return doc.toJson();
 }
-QString MsgFactory::createGameoverLoserMsg(uint32_t gameid, uint32_t playerid, uint64_t start_time, uint64_t end_time, uint64_t total_time, uint32_t total_tries, uint64_t rank)
+QString MsgFactory::createGameoverLoserMsg(uint32_t gameid, uint32_t playerid, uint64_t start_time, uint64_t end_time, uint64_t total_time, uint32_t total_tries, int32_t secret_number, uint64_t rank)
 {
 
     QJsonObject recordObject;
-    recordObject.insert("type"       , RC_GAMEOVER_LOSER);
-    recordObject.insert("gameid"     , QJsonValue::fromVariant(gameid));
-    recordObject.insert("playerid"   , QJsonValue::fromVariant(playerid));
-    recordObject.insert("start_time" , QJsonValue::fromVariant(start_time));
-    recordObject.insert("end_time"   , QJsonValue::fromVariant(end_time));
-    recordObject.insert("total_time" , QJsonValue::fromVariant(total_time));
-    recordObject.insert("total_tries", QJsonValue::fromVariant(total_tries));
-    recordObject.insert("rank"       , QJsonValue::fromVariant(rank));
+    recordObject.insert("type"          , RC_GAMEOVER_LOSER);
+    recordObject.insert("gameid"        , QJsonValue::fromVariant(gameid));
+    recordObject.insert("playerid"      , QJsonValue::fromVariant(playerid));
+    recordObject.insert("start_time"    , QJsonValue::fromVariant(start_time));
+    recordObject.insert("end_time"      , QJsonValue::fromVariant(end_time));
+    recordObject.insert("total_time"    , QJsonValue::fromVariant(total_time));
+    recordObject.insert("total_tries"   , QJsonValue::fromVariant(total_tries));
+    recordObject.insert("secret_number" , QJsonValue::fromVariant(secret_number));
+    recordObject.insert("rank"          , QJsonValue::fromVariant(rank));
     QJsonDocument doc(recordObject);
 
     return doc.toJson();
 }
-QString MsgFactory::createGameoverWinnerMsg(uint32_t gameid, uint32_t playerid, uint64_t start_time, uint64_t end_time, uint64_t total_time, uint32_t total_tries, uint64_t rank)
+QString MsgFactory::createGameoverWinnerMsg(uint32_t gameid, uint32_t playerid, uint64_t start_time, uint64_t end_time, uint64_t total_time, uint32_t total_tries, int32_t secret_number, uint64_t rank)
 {
     QJsonObject recordObject;
-    recordObject.insert("type"       , RC_GAMEOVER_WINNER);
-    recordObject.insert("gameid"     , QJsonValue::fromVariant(gameid));
-    recordObject.insert("playerid"   , QJsonValue::fromVariant(playerid));
-    recordObject.insert("start_time" , QJsonValue::fromVariant(start_time));
-    recordObject.insert("end_time"   , QJsonValue::fromVariant(end_time));
-    recordObject.insert("total_time" , QJsonValue::fromVariant(total_time));
-    recordObject.insert("total_tries", QJsonValue::fromVariant(total_tries));
-    recordObject.insert("rank"       , QJsonValue::fromVariant(rank));
+    recordObject.insert("type"          , RC_GAMEOVER_WINNER);
+    recordObject.insert("gameid"        , QJsonValue::fromVariant(gameid));
+    recordObject.insert("playerid"      , QJsonValue::fromVariant(playerid));
+    recordObject.insert("start_time"    , QJsonValue::fromVariant(start_time));
+    recordObject.insert("end_time"      , QJsonValue::fromVariant(end_time));
+    recordObject.insert("total_time"    , QJsonValue::fromVariant(total_time));
+    recordObject.insert("total_tries"   , QJsonValue::fromVariant(total_tries));
+    recordObject.insert("secret_number" , QJsonValue::fromVariant(secret_number));
+    recordObject.insert("rank"          , QJsonValue::fromVariant(rank));
     QJsonDocument doc(recordObject);
 
     return doc.toJson();

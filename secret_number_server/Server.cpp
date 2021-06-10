@@ -157,7 +157,15 @@ void Server::onProcessMsg(QString msg)
                 {
                     game->endGame(true);
                     // TODO: Rank
-                    client->sendTextMessage(MsgFactory::createGameoverWinnerMsg(gameid, playerid, game->getStartTime(), game->getEndTime(), game->getTotalMs(), game->getNbTries(), 1));
+                    client->sendTextMessage(MsgFactory::createGameoverWinnerMsg(
+                                                gameid,
+                                                playerid,
+                                                game->getStartTime(),
+                                                game->getEndTime(),
+                                                game->getTotalMs(),
+                                                game->getNbTries(),
+                                                game->getSecretNumber(),
+                                                1));
                     m_GameManager.removeGame(gameid);
 
                 }
@@ -177,7 +185,15 @@ void Server::onProcessMsg(QString msg)
                 {
                     // TODO: Rank
                     game->endGame(false);
-                    client->sendTextMessage(MsgFactory::createGameoverLoserMsg(gameid, playerid, game->getStartTime(), game->getEndTime(), game->getTotalMs(), game->getNbTries(), 1));
+                    client->sendTextMessage(MsgFactory::createGameoverLoserMsg(
+                                                gameid,
+                                                playerid,
+                                                game->getStartTime(),
+                                                game->getEndTime(),
+                                                game->getTotalMs(),
+                                                game->getNbTries(),
+                                                game->getSecretNumber(),
+                                                1));
                     m_GameManager.removeGame(gameid);
                 }
 

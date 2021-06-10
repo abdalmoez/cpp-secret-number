@@ -141,16 +141,27 @@ void GameClient::onMsgReceived(QString msg)
         }
         case RC_GAMEOVER_LOSER:
         {
+            QString answer = "";
+            if(jsonObject.contains("secret_number") && jsonObject["secret_number"].isDouble())
+            {
+                answer = "\n The secret number is " + QString::number((int32_t)jsonObject["secret_number"].toDouble());
+            }
+
             QMessageBox messageBox;
-            messageBox.critical(0,"GameOver","You lose!");
+            messageBox.critical(0,"GameOver","You lose!"+answer);
             messageBox.show();
             m_currentGameId = INVALID_GAME_ID;
             break;
         }
         case RC_GAMEOVER_WINNER:
         {
+            QString answer = "";
+            if(jsonObject.contains("secret_number") && jsonObject["secret_number"].isDouble())
+            {
+                answer = "\n The secret number is " + QString::number((int32_t)jsonObject["secret_number"].toDouble());
+            }
             QMessageBox messageBox;
-            messageBox.information(0,"GameOver","You Win!");
+            messageBox.information(0,"GameOver","You Win!"+answer);
             messageBox.show();
             m_currentGameId = INVALID_GAME_ID;
             break;
