@@ -6,7 +6,7 @@
 
 const uint32_t INVALID_GAME_ID = 0xFFFFFFFF;
 const uint32_t MAX_GAMES = 1000;
-const uint32_t MAX_TRIES = 1000;
+const uint32_t MAX_TRIES = 10;
 
 class GameManager
 {

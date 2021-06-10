@@ -141,27 +141,49 @@ void GameClient::onMsgReceived(QString msg)
         }
         case RC_GAMEOVER_LOSER:
         {
-            QString answer = "";
+            QString content = "================== You Lose ==================\n";
             if(jsonObject.contains("secret_number") && jsonObject["secret_number"].isDouble())
             {
-                answer = "\n The secret number is " + QString::number((int32_t)jsonObject["secret_number"].toDouble());
+                content += "\n Secret number: " + QString::number((int32_t)jsonObject["secret_number"].toDouble());
+            }
+            if(jsonObject.contains("total_time") && jsonObject["total_time"].isDouble())
+            {
+                uint64_t total_ms = (uint64_t)jsonObject["total_time"].toDouble();
+                content += "\n Time: " + QString::number(total_ms/1000)+"."+QString::number(total_ms%1000)+" ms";
+            }
+            if(jsonObject.contains("total_tries") && jsonObject["total_tries"].isDouble())
+            {
+                content += "\n Total tries: " + QString::number((uint32_t)jsonObject["total_tries"].toDouble());
             }
 
             QMessageBox messageBox;
-            messageBox.critical(0,"GameOver","You lose!"+answer);
+            messageBox.critical(0,"GameOver", content);
             messageBox.show();
             m_currentGameId = INVALID_GAME_ID;
             break;
         }
         case RC_GAMEOVER_WINNER:
         {
-            QString answer = "";
+            QString content = "================== You Win ==================\n";
+            if(jsonObject.contains("rank") && jsonObject["rank"].isDouble())
+            {
+                content += "\n Your rank: #" + QString::number((uint32_t)jsonObject["rank"].toDouble());
+            }
             if(jsonObject.contains("secret_number") && jsonObject["secret_number"].isDouble())
             {
-                answer = "\n The secret number is " + QString::number((int32_t)jsonObject["secret_number"].toDouble());
+                content += "\n Secret number: " + QString::number((int32_t)jsonObject["secret_number"].toDouble());
+            }
+            if(jsonObject.contains("total_time") && jsonObject["total_time"].isDouble())
+            {
+                uint64_t total_ms = (uint64_t)jsonObject["total_time"].toDouble();
+                content += "\n Time: " + QString::number(total_ms/1000)+"."+QString::number(total_ms%1000)+" ms";
+            }
+            if(jsonObject.contains("total_tries") && jsonObject["total_tries"].isDouble())
+            {
+                content += "\n Total tries: " + QString::number((uint32_t)jsonObject["total_tries"].toDouble());
             }
             QMessageBox messageBox;
-            messageBox.information(0,"GameOver","You Win!"+answer);
+            messageBox.information(0,"GameOver", content);
             messageBox.show();
             m_currentGameId = INVALID_GAME_ID;
             break;
