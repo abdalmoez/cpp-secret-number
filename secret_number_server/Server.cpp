@@ -108,7 +108,11 @@ void Server::onProcessMsg(QString msg)
                 }
                 else
                 {
-                    client->sendTextMessage(MsgFactory::createGameCreatedMsg(game->getGameId(), game->getPlayerId(), game->getStartTime()));
+                    client->sendTextMessage(MsgFactory::createGameCreatedMsg(game->getGameId(),
+                                                                             game->getPlayerId(),
+                                                                             game->getStartTime(),
+                                                                             GameInfo::s_maxValue,
+                                                                             GameInfo::s_minValue));
                 }
                 break;
             }
@@ -169,7 +173,7 @@ void Server::onProcessMsg(QString msg)
                     m_GameManager.removeGame(gameid);
 
                 }
-                else if(game->getNbTries() < MAX_TRIES)
+                else if(GameManager::s_maxTries == -1 || game->getNbTries() < GameManager::s_maxTries)
                 {
                     if(game->getSecretNumber() < answer)
                     {

@@ -4,6 +4,7 @@
 #include <QtCore/QObject>
 #include <QtWebSockets/QWebSocket>
 
+class MainWindow;
 const uint32_t INVALID_PLAYER_ID = 0xFFFFFFFF;
 const uint32_t INVALID_GAME_ID   = 0xFFFFFFFF;
 
@@ -11,7 +12,7 @@ class GameClient: public QObject
 {
     Q_OBJECT
 public:
-    GameClient(const QUrl &url);
+    GameClient(const QUrl &url, MainWindow* parent);
     bool sendMsg(QString msg);
 
     uint32_t getPlayerId()
@@ -34,6 +35,7 @@ private:
     QUrl m_url;
     uint32_t m_playerId;
     uint32_t m_currentGameId;
+    MainWindow* m_parent;
 };
 
 #endif // GAMECLIENT_H

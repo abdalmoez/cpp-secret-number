@@ -1,5 +1,7 @@
 #include "GameManager.h"
 
+int32_t GameManager::s_maxTries = -1;
+
 GameInfo* GameManager::createGame(uint32_t playerid)
 {
     uint32_t gameid = getNextID();

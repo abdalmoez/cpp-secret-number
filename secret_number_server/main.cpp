@@ -26,19 +26,45 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
 
     QCommandLineParser parser;
-    parser.setApplicationDescription("QtWebSockets example: echoserver");
+    parser.setApplicationDescription("Secret number game server");
     parser.addHelpOption();
 
-    QCommandLineOption dbgOption(QStringList() << "d" << "debug",
-            QCoreApplication::translate("main", "Debug output [default: off]."));
-    parser.addOption(dbgOption);
+    QCommandLineOption limitOption(QStringList() << "l" << "limit",
+             QCoreApplication::translate("main", "Max numbers of tries (-1 for unlimited)"),
+             QCoreApplication::translate("main", "limit"), QLatin1String("-1"));
+    parser.addOption(limitOption);
+    QCommandLineOption boundsOption(QStringList() << "b" << "bounds",
+             QCoreApplication::translate("main", "Bounds of the secret number x,y"),
+             QCoreApplication::translate("main", "bounds"), QLatin1String("1,100"));
+    parser.addOption(boundsOption);
     QCommandLineOption portOption(QStringList() << "p" << "port",
-            QCoreApplication::translate("main", "Port for echoserver [default: 1234]."),
-            QCoreApplication::translate("main", "port"), QLatin1String("1234"));
+            QCoreApplication::translate("main", "The port the server should use. You will need to Port Forward in order for players to join your server from outside your LAN. (default: 4242)"),
+            QCoreApplication::translate("main", "port"), QLatin1String("4242"));
     parser.addOption(portOption);
     parser.process(a);
-    bool debug = parser.isSet(dbgOption);
-    int port = parser.value(portOption).toInt();
+    int limit = parser.value(limitOption).toInt();
+    int port  = parser.value(portOption).toInt();
+    auto bounds_param = parser.value(boundsOption).split(",");
+
+    if(bounds_param.size()!=2)
+    {
+        qFatal("Invalid bounds argument");
+        return 1;
+    }
+    if(limit<0 && limit != -1)
+    {
+        qFatal("Invalid limit argument");
+        return 1;
+    }
+    if(port <= 0)
+    {
+        qFatal("Invalid port argument");
+        return 1;
+    }
+
+    GameInfo::s_minValue = bounds_param[0].toInt();
+    GameInfo::s_maxValue = bounds_param[1].toInt();
+    GameManager::s_maxTries = limit;
 
     Server server(port);
     QObject::connect(&server, &Server::closeApp, &a, &QCoreApplication::quit);

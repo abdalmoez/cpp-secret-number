@@ -3,11 +3,15 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QMessageBox>
+#include "mainwindow.h"
+#include <QApplication>
 
-GameClient::GameClient(const QUrl &url)
+
+GameClient::GameClient(const QUrl &url, MainWindow* parent)
     : m_url(url)
     , m_playerId(INVALID_PLAYER_ID)
     , m_currentGameId(INVALID_GAME_ID)
+    , m_parent(parent)
 {
     connect(&m_webSocket, &QWebSocket::connected, this, &GameClient::onConnected);
     connect(&m_webSocket, &QWebSocket::disconnected, this, &GameClient::closeApp);
@@ -108,6 +112,11 @@ void GameClient::onMsgReceived(QString msg)
             {
                 m_currentGameId = INVALID_GAME_ID;
             }
+            if(jsonObject.contains("max") && jsonObject["max"].isDouble()
+               && jsonObject.contains("min") && jsonObject["min"].isDouble())
+            {
+                m_parent->showGamePanel(jsonObject["max"].toDouble(), jsonObject["min"].toDouble());
+            }
             break;
         }
         case RC_INVALID_ANSWER:
@@ -128,11 +137,11 @@ void GameClient::onMsgReceived(QString msg)
 
             if(jsonObject.contains("total_tries") && jsonObject["total_tries"].isDouble())
             {
-                messageBox.information(0,"Server","Invalid answer! (total tries: " + QString::number(jsonObject["total_tries"].toDouble()) +")"+state);
+                messageBox.warning(0,"Server","Invalid answer! (total tries: " + QString::number(jsonObject["total_tries"].toDouble()) +")"+state);
             }
             else
             {
-                messageBox.information(0,"Server","Invalid answer!"+state);
+                messageBox.warning(0,"Server","Invalid answer!"+state);
             }
             messageBox.show();
 

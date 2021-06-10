@@ -1,6 +1,9 @@
 #include "GameInfo.h"
 
 
+int32_t GameInfo::s_minValue = 1;
+int32_t GameInfo::s_maxValue = 100;
+
 std::ostream& operator<<(std::ostream& out, const GameInfo& game)
 {
     out << "Game"

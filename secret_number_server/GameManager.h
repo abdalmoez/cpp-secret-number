@@ -6,7 +6,6 @@
 
 const uint32_t INVALID_GAME_ID = 0xFFFFFFFF;
 const uint32_t MAX_GAMES = 1000;
-const uint32_t MAX_TRIES = 10;
 
 class GameManager
 {
@@ -15,6 +14,7 @@ class GameManager
         void removeGame(uint32_t gameid);
         GameInfo* getPlayerGame(uint32_t playerid);
 
+        static int32_t s_maxTries;
 
     protected:
         uint32_t getNextID();

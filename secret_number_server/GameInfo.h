@@ -7,8 +7,6 @@
 #include <random>
 
 
-const int32_t MIN_VALUE = 1;
-const int32_t MAX_VALUE = 100;
 
 class GameInfo
 {
@@ -32,7 +30,7 @@ class GameInfo
         {
             std::random_device rd;
             std::mt19937 gen(rd());
-            std::uniform_real_distribution<> distribution(MIN_VALUE, MAX_VALUE);
+            std::uniform_real_distribution<> distribution(s_minValue, s_maxValue);
 
 
             m_SecretNumber = distribution(gen);
@@ -42,7 +40,7 @@ class GameInfo
         uint32_t     getGameId       () const { return m_GameId;       }
         uint32_t     getPlayerId     () const { return m_PlayerId;     }
         int32_t      getSecretNumber () const { return m_SecretNumber; }
-        uint32_t     getNbTries      () const { return m_NbTries;      }
+        int32_t      getNbTries      () const { return m_NbTries;      }
         uint64_t     getStartTime    () const { return m_StartTime;    }
         uint64_t     getEndTime      () const { return m_EndTime;      }
         uint64_t     isGameResolved  () const { return m_IsResolved;   }
@@ -75,18 +73,20 @@ class GameInfo
 
         void incNbTries()
         {
-            if(m_EndTime==0)
+            if(m_EndTime==0 && m_NbTries != std::numeric_limits<int32_t>::max())
             {
                 m_NbTries++;
             }
         }
 
 
+        static int32_t s_minValue;
+        static int32_t s_maxValue;
     private:
         uint32_t     m_GameId;
         uint32_t     m_PlayerId;
         int32_t      m_SecretNumber;
-        uint32_t     m_NbTries;
+        int32_t      m_NbTries;
         uint64_t     m_StartTime;
         uint64_t     m_EndTime;
         bool         m_IsResolved;

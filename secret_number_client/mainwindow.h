@@ -16,6 +16,8 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void showGamePanel(int32_t max_value, int32_t min_value);
+    void showLoginPanel();
 
 private slots:
     void on_pushButton_clicked();

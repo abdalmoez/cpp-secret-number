@@ -22,6 +22,22 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::showGamePanel(int32_t max_value, int32_t min_value)
+{
+    ui->answerInput->setMaximum(max_value);
+    ui->answerInput->setMinimum(min_value);
+    ui->answerInput->setValue(min_value);
+    ui->answerLabel->setText("Enter the secret value. It's between "+QString::number(min_value) +" and "+ QString::number(max_value)+".");
+    ui->loginFrame->setVisible(false);
+    ui->answerFrame->setVisible(true);
+}
+void MainWindow::showLoginPanel()
+{
+    ui->loginFrame->setVisible(true);
+    ui->answerFrame->setVisible(false);
+
+}
+
 void MainWindow::on_pushButton_clicked()
 {
     QString ipstr = ui->inputIp->text();
@@ -45,14 +61,12 @@ void MainWindow::on_pushButton_clicked()
 
     QString urlstr = "ws://" + ipstr + ":" + ui->inputPort->text();
     QUrl url(urlstr);
-    client = new GameClient(url);
+    client = new GameClient(url, this);
 
     qInfo() << "Connecting to "<<urlstr;
 
     QObject::connect(client, &GameClient::closeApp, this, &MainWindow::close);
 
-    ui->loginFrame->setVisible(false);
-    ui->answerFrame->setVisible(true);
 }
 
 
