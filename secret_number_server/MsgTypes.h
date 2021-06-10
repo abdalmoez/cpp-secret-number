@@ -12,6 +12,7 @@
 #define RC_SERVER_IS_FULL          0x7001
 #define RC_INVALID_REQUEST         0x7002
 #define RC_CANNOT_CREATE_GAME      0x7003
+#define RC_FORBIDDEN_CONTENT       0x7004
 
 #define RC_KICKED                  0x8000
 #define RC_BANNED                  0x8001

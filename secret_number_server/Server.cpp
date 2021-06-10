@@ -21,7 +21,7 @@ void Server::start()
 
         connect(&m_WebSocketServer, &QWebSocketServer::newConnection, this, &Server::onPlayerConnect);
 
-        connect(&m_WebSocketServer, &QWebSocketServer::closed, this, &Server::closeApp);
+        connect(&m_WebSocketServer, &QWebSocketServer::closed, this, &Server::stop);
     }
     else
     {
@@ -32,6 +32,7 @@ void Server::start()
 
 void Server::stop()
 {
+    qInfo("[2021/04/09 13:29:22] Stoping the server");
     m_WebSocketServer.close();
     m_Clients.clear();
     emit closeApp();
@@ -113,7 +114,65 @@ void Server::onProcessMsg(QString msg)
             }
             case REQUEST_ANSWER:
             {
-                //TODO: send response on answer
+                if(!jsonObject.contains("playerid") || !jsonObject["playerid"].isDouble())
+                {
+                    client->sendTextMessage(MsgFactory::createErrorMsg(RC_INVALID_REQUEST));
+                    return;
+                }
+                if(!jsonObject.contains("gameid") || !jsonObject["gameid"].isDouble())
+                {
+                    client->sendTextMessage(MsgFactory::createErrorMsg(RC_INVALID_REQUEST));
+                    return;
+                }
+                if(!jsonObject.contains("answer") || !jsonObject["answer"].isDouble())
+                {
+                    client->sendTextMessage(MsgFactory::createErrorMsg(RC_INVALID_REQUEST));
+                    return;
+                }
+                uint32_t playerid = (uint32_t)jsonObject["playerid"].toDouble();
+                uint32_t gameid = (uint32_t)jsonObject["gameid"].toDouble();
+                uint32_t answer = (uint32_t)jsonObject["answer"].toDouble();
+
+                if(gameid == INVALID_GAME_ID)
+                {
+                    client->sendTextMessage(MsgFactory::createErrorMsg(RC_INVALID_REQUEST));
+                    return;
+                }
+
+                if(m_Clients[client].getId() != playerid)
+                {
+                    client->sendTextMessage(MsgFactory::createErrorMsg(RC_FORBIDDEN_CONTENT));
+                    return;
+                }
+                GameInfo* game = m_GameManager.getPlayerGame(playerid);
+                if(game == nullptr || game->getGameId() != gameid)
+                {
+                    client->sendTextMessage(MsgFactory::createErrorMsg(RC_FORBIDDEN_CONTENT));
+                    return;
+                }
+
+                game->incNbTries();
+
+                if(game->isValidAnswer(answer))
+                {
+                    game->endGame(true);
+                    // TODO: Rank
+                    client->sendTextMessage(MsgFactory::createGameoverWinnerMsg(gameid, playerid, game->getStartTime(), game->getEndTime(), game->getTotalMs(), game->getNbTries(), 1));
+                    m_GameManager.removeGame(gameid);
+
+                }
+                else if(game->getNbTries() < MAX_TRIES)
+                {
+                    client->sendTextMessage(MsgFactory::createInvalidAnswerMsg(gameid, playerid, game->getNbTries()));
+                }
+                else
+                {
+                    // TODO: Rank
+                    game->endGame(false);
+                    client->sendTextMessage(MsgFactory::createGameoverLoserMsg(gameid, playerid, game->getStartTime(), game->getEndTime(), game->getTotalMs(), game->getNbTries(), 1));
+                    m_GameManager.removeGame(gameid);
+                }
+
                 break;
             }
             case REQUEST_END_GAME:

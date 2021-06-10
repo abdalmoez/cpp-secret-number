@@ -5,6 +5,8 @@
 #include <QHostAddress>
 #include <QMessageBox>
 #include <sstream>
+#include "MsgFactory.h"
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -12,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
     , client(nullptr)
 {
     ui->setupUi(this);
+    ui->answerFrame->setVisible(false);
 }
 
 MainWindow::~MainWindow()
@@ -47,5 +50,26 @@ void MainWindow::on_pushButton_clicked()
     qInfo() << "Connecting to "<<urlstr;
 
     QObject::connect(client, &GameClient::closeApp, this, &MainWindow::close);
+
+    ui->loginFrame->setVisible(false);
+    ui->answerFrame->setVisible(true);
+}
+
+
+void MainWindow::on_sendAnswerBtn_clicked()
+{
+    if(client == nullptr)
+    {
+        QMessageBox messageBox;
+        messageBox.critical(0,"Error","You are not connected to any server!");
+        messageBox.show();
+        return;
+    }
+
+    if(client->getPlayerId() != INVALID_PLAYER_ID)
+    {
+        client->sendMsg(MsgFactory::createAnswerMsg(client->getPlayerId(), client->getGameId(), ui->answerInput->value()));
+    }
+
 }
 

@@ -7,6 +7,9 @@
 #include <random>
 
 
+const int32_t MIN_VALUE = 1;
+const int32_t MAX_VALUE = 100;
+
 class GameInfo
 {
     public:
@@ -56,9 +59,9 @@ class GameInfo
             return (m_EndTime - m_StartTime);
         }
 
-        bool isValidAnswer(uint32_t answer)
+        bool isValidAnswer(int32_t answer)
         {
-            return (answer = m_SecretNumber);
+            return (answer == m_SecretNumber);
         }
 
         void endGame(bool resolved = false)
@@ -70,8 +73,14 @@ class GameInfo
             }
         }
 
-        const static int32_t MIN_VALUE = 1;
-        const static int32_t MAX_VALUE = 100;
+        void incNbTries()
+        {
+            if(m_EndTime==0)
+            {
+                m_NbTries++;
+            }
+        }
+
 
     private:
         uint32_t     m_GameId;
