@@ -19,12 +19,15 @@ public:
     ~MainWindow();
     void showGamePanel(int32_t max_value, int32_t min_value);
     void showLoginPanel();
+    QString getPlayerName();
 
 private slots:
     void on_pushButton_clicked();
 
     void on_sendAnswerBtn_clicked();
     void lookedUp(const QHostInfo &host);
+
+    void on_botState_stateChanged(int arg1);
 
 private:
     Ui::MainWindow *ui;

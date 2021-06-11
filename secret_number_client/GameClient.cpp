@@ -63,7 +63,7 @@ void GameClient::onMsgReceived(QString msg)
             {
                 qInfo() << "Accepted Connection with the server";
                 m_playerId = (uint32_t)jsonObject["playerid"].toDouble();
-                m_webSocket.sendTextMessage(MsgFactory::createNewGameRequest(m_playerId));
+                m_webSocket.sendTextMessage(MsgFactory::createNewGameRequest(m_playerId, m_parent->getPlayerName()));
                 return;
             }
             break;

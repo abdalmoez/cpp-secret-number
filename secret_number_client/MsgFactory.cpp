@@ -3,11 +3,12 @@
 #include <QJsonObject>
 #include <QVariant>
 
-QString MsgFactory::createNewGameRequest(uint32_t playerid)
+QString MsgFactory::createNewGameRequest(uint32_t playerid, QString playername)
 {
     QJsonObject recordObject;
     recordObject.insert("type"      , REQUEST_NEW_GAME);
     recordObject.insert("playerid"  , QJsonValue::fromVariant(playerid));
+    recordObject.insert("playername"  , QJsonValue::fromVariant(playername));
     QJsonDocument doc(recordObject);
 
     return doc.toJson();

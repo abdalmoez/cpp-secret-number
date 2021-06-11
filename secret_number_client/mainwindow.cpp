@@ -21,6 +21,18 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+QString MainWindow::getPlayerName()
+{
+    if(ui->botState->isChecked())
+    {
+        return "auto";
+    }
+    else
+    {
+        return ui->nameInput->text();
+    }
+}
+
 void MainWindow::showGamePanel(int32_t max_value, int32_t min_value)
 {
     ui->answerInput->setMaximum(max_value);
@@ -60,6 +72,13 @@ void MainWindow::lookedUp(const QHostInfo &host)
 
 void MainWindow::on_pushButton_clicked()
 {
+    if(!ui->botState->isChecked() && ui->nameInput->text().length() < 3)
+    {
+        QMessageBox messageBox;
+        messageBox.critical(0,"Error","Invalid name");
+        messageBox.show();
+        return;
+    }
     if(client != nullptr)
     {
         QMessageBox messageBox;
@@ -86,6 +105,21 @@ void MainWindow::on_sendAnswerBtn_clicked()
     {
         client->sendMsg(MsgFactory::createAnswerMsg(client->getPlayerId(), client->getGameId(), ui->answerInput->value()));
     }
+}
 
+void MainWindow::on_botState_stateChanged(int arg1)
+{
+    if(ui->botState->isChecked())
+    {
+        ui->nameInput->setEnabled(false);
+        ui->botDifficulty->setEnabled(true);
+        ui->botDifficulty->setFocus();
+    }
+    else
+    {
+        ui->botDifficulty->setEnabled(false);
+        ui->nameInput->setEnabled(true);
+        ui->nameInput->setFocus();
+    }
 }
 

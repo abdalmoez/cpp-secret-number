@@ -42,7 +42,7 @@ color: rgb(218, 218, 218);</string>
    <set>QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks</set>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLabel" name="label">
+   <widget class="QLabel" name="bgImage">
     <property name="geometry">
      <rect>
       <x>-10</x>
@@ -79,9 +79,9 @@ color: rgb(218, 218, 218);</string>
     <widget class="QLabel" name="label_2">
      <property name="geometry">
       <rect>
-       <x>20</x>
+       <x>7</x>
        <y>10</y>
-       <width>81</width>
+       <width>31</width>
        <height>16</height>
       </rect>
      </property>
@@ -92,8 +92,8 @@ color: rgb(218, 218, 218);</string>
     <widget class="QLineEdit" name="inputHost">
      <property name="geometry">
       <rect>
-       <x>150</x>
-       <y>10</y>
+       <x>42</x>
+       <y>8</y>
        <width>141</width>
        <height>22</height>
       </rect>
@@ -105,7 +105,7 @@ color: rgb(218, 218, 218);</string>
       <string>localhost</string>
      </property>
      <property name="maxLength">
-      <number>15</number>
+      <number>32</number>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -114,9 +114,9 @@ color: rgb(218, 218, 218);</string>
     <widget class="QSpinBox" name="inputPort">
      <property name="geometry">
       <rect>
-       <x>150</x>
-       <y>40</y>
-       <width>141</width>
+       <x>230</x>
+       <y>8</y>
+       <width>71</width>
        <height>22</height>
       </rect>
      </property>
@@ -145,9 +145,9 @@ color: rgb(218, 218, 218);</string>
     <widget class="QLabel" name="label_3">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>40</y>
-       <width>81</width>
+       <x>200</x>
+       <y>10</y>
+       <width>26</width>
        <height>16</height>
       </rect>
      </property>
@@ -170,6 +170,85 @@ color: rgb(218, 218, 218);</string>
      <property name="flat">
       <bool>false</bool>
      </property>
+    </widget>
+    <widget class="QLabel" name="label_4">
+     <property name="geometry">
+      <rect>
+       <x>7</x>
+       <y>50</y>
+       <width>31</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Name:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="nameInput">
+     <property name="geometry">
+      <rect>
+       <x>42</x>
+       <y>48</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">border: 1px solid white;</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="maxLength">
+      <number>24</number>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="botState">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>50</y>
+       <width>51</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Auto</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="botDifficulty">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>200</x>
+       <y>48</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <item>
+      <property name="text">
+       <string>Alex (Newbie)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Simone (Medium)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Peter (Master)</string>
+      </property>
+     </item>
     </widget>
    </widget>
    <widget class="QFrame" name="answerFrame">
@@ -251,8 +330,21 @@ color: rgb(218, 218, 218);</string>
      </property>
     </widget>
    </widget>
+   <zorder>bgImage</zorder>
+   <zorder>answerFrame</zorder>
+   <zorder>loginFrame</zorder>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>inputHost</tabstop>
+  <tabstop>inputPort</tabstop>
+  <tabstop>botState</tabstop>
+  <tabstop>nameInput</tabstop>
+  <tabstop>botDifficulty</tabstop>
+  <tabstop>pushButton</tabstop>
+  <tabstop>answerInput</tabstop>
+  <tabstop>sendAnswerBtn</tabstop>
+ </tabstops>
  <resources>
   <include location="resources.qrc"/>
  </resources>

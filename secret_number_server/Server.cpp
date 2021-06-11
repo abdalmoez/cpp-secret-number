@@ -108,6 +108,15 @@ void Server::onProcessMsg(QString msg)
                 }
                 else
                 {
+                    QString playername ="auto";
+
+                    if(jsonObject.contains("playername") || jsonObject["playername"].isString())
+                    {
+                        playername = jsonObject["playername"].toString();
+                    }
+
+                    m_Clients[client].setName(playername);
+
                     client->sendTextMessage(MsgFactory::createGameCreatedMsg(game->getGameId(),
                                                                              game->getPlayerId(),
                                                                              game->getStartTime(),
@@ -170,6 +179,17 @@ void Server::onProcessMsg(QString msg)
                                                 game->getNbTries(),
                                                 game->getSecretNumber(),
                                                 1));
+
+                    if(m_Clients[client].getName() == "auto")
+                    {
+                        qDebug() << "A bot win a game after" << game->getNbTries() << "tries in "
+                                 << QString::number(game->getTotalMs()/1000)+"."+ QString::number(game->getTotalMs() %1000)<<"seconds";
+                    }
+                    else
+                    {
+                        qDebug() << "Player "<< m_Clients[client].getName() <<" win a game after" << QString::number(game->getNbTries())
+                                 << "tries in " << QString::number(game->getTotalMs()/1000)+"."+ QString::number(game->getTotalMs() %1000)<<"seconds";
+                    }
                     m_GameManager.removeGame(gameid);
 
                 }
@@ -198,7 +218,19 @@ void Server::onProcessMsg(QString msg)
                                                 game->getNbTries(),
                                                 game->getSecretNumber(),
                                                 1));
+
+                    if(m_Clients[client].getName() == "auto")
+                    {
+                        qDebug() << "A bot lose a game after" << game->getNbTries() << "tries in "
+                                 << QString::number(game->getTotalMs()/1000)+"."+ QString::number(game->getTotalMs() %1000)<<"seconds";
+                    }
+                    else
+                    {
+                        qDebug() << "Player "<< m_Clients[client].getName() <<" lose a game after" << QString::number(game->getNbTries())
+                                 << "tries in " << QString::number(game->getTotalMs()/1000)+"."+ QString::number(game->getTotalMs() %1000)<<"seconds";
+                    }
                     m_GameManager.removeGame(gameid);
+
                 }
 
                 break;
