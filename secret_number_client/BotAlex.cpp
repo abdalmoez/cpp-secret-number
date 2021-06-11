@@ -20,11 +20,6 @@ int32_t BotAlex::getOutput()
     return m_output;
 }
 
-void BotAlex::reset()
-{
-    m_output = m_min - 1;
-}
-
 void BotAlex::onFail(int32_t value, int32_t state)
 {
     //No backward

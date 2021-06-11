@@ -15,7 +15,6 @@ public:
     void learn();
     int32_t getOutput();
 
-    void reset();
     void onFail(int32_t value, int32_t state);
 
 private:

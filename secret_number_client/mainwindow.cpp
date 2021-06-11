@@ -37,9 +37,17 @@ Bot* MainWindow::getBot()
 {
     if(!ui->botState->isChecked())
     {
+
         return nullptr;
     }
-    return &m_BotAlex;
+    if(ui->botDifficulty->currentIndex() == 0)
+    {
+        return &m_BotAlex;
+    }
+    else
+    {
+        return &m_BotSimone;
+    }
 }
 
 void MainWindow::setAnswerInputValue(int32_t value)

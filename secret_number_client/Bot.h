@@ -10,7 +10,6 @@ class Bot
         virtual  void learn() = 0;
         virtual  int32_t getOutput() = 0;
 
-        virtual  void reset() = 0;
         virtual  void onFail(int32_t value, int32_t state) = 0;
 
 };

@@ -6,6 +6,7 @@
 
 #include "GameClient.h"
 #include "BotAlex.h"
+#include "BotSimone.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -36,6 +37,7 @@ private:
     Ui::MainWindow *ui;
     GameClient * client;
     BotAlex     m_BotAlex;
+    BotSimone   m_BotSimone;
 
 };
 #endif // MAINWINDOW_H
