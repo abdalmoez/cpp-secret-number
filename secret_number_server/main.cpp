@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
              QCoreApplication::translate("main", "Verbose mode. Prints out more information."));
     parser.addOption(verboseOption);
     QCommandLineOption maxPlayersOption(QStringList() << "m" << "max-players",
-             QCoreApplication::translate("main", "Max number of players to support."),
+             QCoreApplication::translate("main", "Max number of players to support (default: 1000)."),
              QCoreApplication::translate("main", "max-players"), QLatin1String("1000"));
     parser.addOption(maxPlayersOption);
     QCommandLineOption portOption(QStringList() << "p" << "port",
