@@ -86,10 +86,10 @@ color: rgb(218, 218, 218);</string>
       </rect>
      </property>
      <property name="text">
-      <string>IP Address:</string>
+      <string>Host:</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="inputIp">
+    <widget class="QLineEdit" name="inputHost">
      <property name="geometry">
       <rect>
        <x>150</x>
@@ -102,7 +102,7 @@ color: rgb(218, 218, 218);</string>
       <string notr="true">border: 1px solid white;</string>
      </property>
      <property name="text">
-      <string>127.0.0.1</string>
+      <string>localhost</string>
      </property>
      <property name="maxLength">
       <number>15</number>

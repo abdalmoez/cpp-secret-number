@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QHostInfo>
 
 #include "GameClient.h"
 
@@ -23,6 +24,7 @@ private slots:
     void on_pushButton_clicked();
 
     void on_sendAnswerBtn_clicked();
+    void lookedUp(const QHostInfo &host);
 
 private:
     Ui::MainWindow *ui;
