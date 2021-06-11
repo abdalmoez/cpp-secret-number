@@ -4,8 +4,7 @@
 #include <iostream>
 #include <QString>
 #include <chrono>
-#include <random>
-
+#include <QRandomGenerator>
 
 
 class GameInfo
@@ -28,12 +27,7 @@ class GameInfo
             , m_EndTime(0)
             , m_IsResolved(false)
         {
-            std::random_device rd;
-            std::mt19937 gen(rd());
-            std::uniform_real_distribution<> distribution(s_minValue, s_maxValue);
-
-
-            m_SecretNumber = distribution(gen);
+            m_SecretNumber = s_minValue + QRandomGenerator::global()->generate() % (s_maxValue - s_minValue);
             m_StartTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         }
 

@@ -34,7 +34,9 @@ QString MainWindow::getPlayerName()
 }
 void MainWindow::onEndGame()
 {
+
     QMessageBox::StandardButton reply = QMessageBox::question(this, "Server", "Do you wan't to start new game?", QMessageBox::Yes|QMessageBox::No);
+
     if (reply == QMessageBox::Yes)
     {
         client->sendMsg(MsgFactory::createNewGameRequest(client->getPlayerId(), getPlayerName()));

@@ -208,9 +208,11 @@ void GameClient::onMsgReceived(QString msg)
                 content += "\n Total tries: " + QString::number((uint32_t)jsonObject["total_tries"].toDouble());
             }
 
-            QMessageBox messageBox;
-            messageBox.critical(m_parent,"GameOver", content);
-            messageBox.show();
+            {
+                QMessageBox messageBox;
+                messageBox.critical(m_parent,"GameOver", content);
+                messageBox.show();
+            }
             m_currentGameId = INVALID_GAME_ID;
             m_parent->onEndGame();
             break;
@@ -235,9 +237,11 @@ void GameClient::onMsgReceived(QString msg)
             {
                 content += "\n Total tries: " + QString::number((uint32_t)jsonObject["total_tries"].toDouble());
             }
-            QMessageBox messageBox;
-            messageBox.information(m_parent,"GameOver", content);
-            messageBox.show();
+            {
+                QMessageBox messageBox;
+                messageBox.information(m_parent,"GameOver", content);
+                messageBox.show();
+            }
             m_currentGameId = INVALID_GAME_ID;
             m_parent->onEndGame();
             break;
