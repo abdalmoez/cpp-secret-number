@@ -10,6 +10,7 @@ CONFIG += c++11
 
 SOURCES += \
     BotAlex.cpp \
+    BotPeter.cpp \
     BotSimone.cpp \
     GameClient.cpp \
     MsgFactory.cpp \
@@ -19,6 +20,7 @@ SOURCES += \
 HEADERS += \
     Bot.h \
     BotAlex.h \
+    BotPeter.h \
     BotSimone.h \
     GameClient.h \
     MsgFactory.h \

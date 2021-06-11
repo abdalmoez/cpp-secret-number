@@ -44,9 +44,13 @@ Bot* MainWindow::getBot()
     {
         return &m_BotAlex;
     }
-    else
+    else if(ui->botDifficulty->currentIndex() == 1)
     {
         return &m_BotSimone;
+    }
+    else
+    {
+        return &m_BotPeter;
     }
 }
 
