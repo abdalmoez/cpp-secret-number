@@ -5,6 +5,7 @@
 #include <QHostInfo>
 
 #include "GameClient.h"
+#include "BotAlex.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -20,6 +21,8 @@ public:
     void showGamePanel(int32_t max_value, int32_t min_value);
     void showLoginPanel();
     QString getPlayerName();
+    Bot* getBot();
+    void setAnswerInputValue(int32_t value);
 
 private slots:
     void on_pushButton_clicked();
@@ -32,5 +35,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     GameClient * client;
+    BotAlex     m_BotAlex;
+
 };
 #endif // MAINWINDOW_H

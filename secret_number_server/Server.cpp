@@ -197,11 +197,11 @@ void Server::onProcessMsg(QString msg)
                 {
                     if(game->getSecretNumber() < answer)
                     {
-                        client->sendTextMessage(MsgFactory::createInvalidAnswerMsg(gameid, playerid, game->getNbTries(), -1));
+                        client->sendTextMessage(MsgFactory::createInvalidAnswerMsg(gameid, playerid, answer, game->getNbTries(), -1));
                     }
                     else
                     {
-                        client->sendTextMessage(MsgFactory::createInvalidAnswerMsg(gameid, playerid, game->getNbTries(), 1));
+                        client->sendTextMessage(MsgFactory::createInvalidAnswerMsg(gameid, playerid, answer, game->getNbTries(), 1));
                     }
 
                 }

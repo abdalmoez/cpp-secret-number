@@ -36,6 +36,7 @@ private:
     uint32_t m_playerId;
     uint32_t m_currentGameId;
     MainWindow* m_parent;
+
 };
 
 #endif // GAMECLIENT_H

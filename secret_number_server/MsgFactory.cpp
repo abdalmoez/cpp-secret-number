@@ -17,11 +17,12 @@ QString MsgFactory::createGameCreatedMsg(uint32_t gameid, uint32_t playerid, uin
     return doc.toJson();
 }
 
-QString MsgFactory::createInvalidAnswerMsg(uint32_t gameid, uint32_t playerid, int32_t total_tries, int32_t state)
+QString MsgFactory::createInvalidAnswerMsg(uint32_t gameid, uint32_t playerid,int32_t answer, int32_t total_tries, int32_t state)
 {
     QJsonObject recordObject;
     recordObject.insert("type"       , RC_INVALID_ANSWER);
     recordObject.insert("gameid"     , QJsonValue::fromVariant(gameid));
+    recordObject.insert("answer"     , QJsonValue::fromVariant(answer));
     recordObject.insert("playerid"   , QJsonValue::fromVariant(playerid));
     recordObject.insert("total_tries", QJsonValue::fromVariant(total_tries));
     recordObject.insert("state"      , QJsonValue::fromVariant(state));

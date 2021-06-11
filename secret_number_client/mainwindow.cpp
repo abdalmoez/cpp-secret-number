@@ -33,6 +33,20 @@ QString MainWindow::getPlayerName()
     }
 }
 
+Bot* MainWindow::getBot()
+{
+    if(!ui->botState->isChecked())
+    {
+        return nullptr;
+    }
+    return &m_BotAlex;
+}
+
+void MainWindow::setAnswerInputValue(int32_t value)
+{
+    ui->answerInput->setValue(value);
+}
+
 void MainWindow::showGamePanel(int32_t max_value, int32_t min_value)
 {
     ui->answerInput->setMaximum(max_value);
@@ -40,6 +54,8 @@ void MainWindow::showGamePanel(int32_t max_value, int32_t min_value)
     ui->answerInput->setValue(min_value);
     ui->answerLabel->setText("Enter the secret value. It's between "+QString::number(min_value) +" and "+ QString::number(max_value)+".");
     ui->loginFrame->setVisible(false);
+    ui->sendAnswerBtn->setVisible(!ui->botState->isChecked());
+    ui->answerInput->setEnabled(!ui->botState->isChecked());
     ui->answerFrame->setVisible(true);
 }
 

@@ -115,35 +115,78 @@ void GameClient::onMsgReceived(QString msg)
             if(jsonObject.contains("max") && jsonObject["max"].isDouble()
                && jsonObject.contains("min") && jsonObject["min"].isDouble())
             {
-                m_parent->showGamePanel(jsonObject["max"].toDouble(), jsonObject["min"].toDouble());
+                int32_t max = jsonObject["max"].toDouble();
+                int32_t min = jsonObject["min"].toDouble();
+
+                m_parent->showGamePanel(max, min);
+
+                if(m_currentGameId != INVALID_GAME_ID && m_playerId != INVALID_PLAYER_ID)
+                {
+                    Bot* bot = m_parent->getBot();
+
+                    if(bot != nullptr)
+                    {
+                        bot->setup(min, max);
+                        bot->learn();
+                        int32_t output = bot->getOutput();
+                        m_parent->setAnswerInputValue(output);
+                        m_webSocket.sendTextMessage(MsgFactory::createAnswerMsg(m_playerId, m_currentGameId, output));
+                    }
+                }
             }
+
             break;
         }
         case RC_INVALID_ANSWER:
         {
-            QMessageBox messageBox;
             QString state = "";
-            if(jsonObject.contains("state") && jsonObject["state"].isDouble())
+            if(!jsonObject.contains("answer") || !jsonObject["answer"].isDouble())
             {
-                if(((int32_t)jsonObject["state"].toDouble()) == -1)
-                {
-                    state = "\nThe secret number is less than your value.";
-                }
-                else if(((int32_t)jsonObject["state"].toDouble()) == 1)
-                {
-                    state = "\nThe secret number is high than your value.";
-                }
+                qWarning() << "Invalid msg format "<<jsonObject["type"];
+                return;
             }
 
-            if(jsonObject.contains("total_tries") && jsonObject["total_tries"].isDouble())
+            if(!jsonObject.contains("state") || !jsonObject["state"].isDouble())
             {
-                messageBox.warning(0,"Server","Invalid answer! (total tries: " + QString::number(jsonObject["total_tries"].toDouble()) +")"+state);
+                qWarning() << "Invalid msg format "<<jsonObject["type"];
+                return;
+            }
+            int32_t answer_state = ((int32_t)jsonObject["state"].toDouble());
+
+            if(answer_state == -1)
+            {
+                state = "\nThe secret number is less than your value.";
+            }
+            else if(answer_state == 1)
+            {
+                state = "\nThe secret number is high than your value.";
+            }
+
+
+            Bot* bot = m_parent->getBot();
+
+            if(bot != nullptr)
+            {
+                bot->onFail(jsonObject["answer"].toDouble(), answer_state);
+                bot->learn();
+                int32_t output = bot->getOutput();
+                m_parent->setAnswerInputValue(output);
+                m_webSocket.sendTextMessage(MsgFactory::createAnswerMsg(m_playerId, m_currentGameId, output));
             }
             else
             {
-                messageBox.warning(0,"Server","Invalid answer!"+state);
+                QMessageBox messageBox;
+
+                if(jsonObject.contains("total_tries") && jsonObject["total_tries"].isDouble())
+                {
+                    messageBox.warning(0,"Server","Invalid answer! (total tries: " + QString::number(jsonObject["total_tries"].toDouble()) +")"+state);
+                }
+                else
+                {
+                    messageBox.warning(0,"Server","Invalid answer!"+state);
+                }
+                messageBox.show();
             }
-            messageBox.show();
 
 
             break;
