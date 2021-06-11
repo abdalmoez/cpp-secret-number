@@ -11,6 +11,8 @@ CONFIG -= app_bundle
 SOURCES += \
         GameInfo.cpp \
         GameManager.cpp \
+        HistoryRecord.cpp \
+        HistoryStorage.cpp \
         MsgFactory.cpp \
         PlayerInfo.cpp \
         PlayerManager.cpp \
@@ -25,6 +27,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     GameInfo.h \
     GameManager.h \
+    HistoryRecord.h \
+    HistoryStorage.h \
     MsgFactory.h \
     MsgTypes.h \
     PlayerInfo.h \

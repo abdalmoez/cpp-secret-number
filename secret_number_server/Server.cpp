@@ -2,6 +2,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include "MsgFactory.h"
+#include "HistoryStorage.h"
 
 Server::Server(uint16_t port)
          :m_Port(port)
@@ -169,6 +170,22 @@ void Server::onProcessMsg(QString msg)
                 if(game->isValidAnswer(answer))
                 {
                     game->endGame(true);
+                    uint64_t rank = 0;
+                    if(m_Clients[client].getName() != "auto" && m_Clients[client].getName() != "")
+                    {
+                        rank = HistoryStorage::getRank(HistoryStorage::add(m_Clients[client].getName(),
+                                            game->getStartTime(),
+                                            game->getTotalMs(),
+                                            game->getEndTime(),
+                                            m_Clients[client].getIp(),
+                                            m_Clients[client].getPort(),
+                                            game->getNbTries(),
+                                            m_Clients[client].getId(),
+                                            GameInfo::s_minValue,
+                                            GameInfo::s_minValue,
+                                            HistoryRecordState_Win
+                                            ));
+                    }
                     // TODO: Rank
                     client->sendTextMessage(MsgFactory::createGameoverWinnerMsg(
                                                 gameid,
@@ -178,7 +195,7 @@ void Server::onProcessMsg(QString msg)
                                                 game->getTotalMs(),
                                                 game->getNbTries(),
                                                 game->getSecretNumber(),
-                                                1));
+                                                rank));
 
                     if(m_Clients[client].getName() == "auto")
                     {
@@ -209,6 +226,21 @@ void Server::onProcessMsg(QString msg)
                 {
                     // TODO: Rank
                     game->endGame(false);
+                    if(m_Clients[client].getName() != "auto" && m_Clients[client].getName() != "")
+                    {
+                        HistoryStorage::add(m_Clients[client].getName(),
+                                            game->getStartTime(),
+                                            game->getTotalMs(),
+                                            game->getEndTime(),
+                                            m_Clients[client].getIp(),
+                                            m_Clients[client].getPort(),
+                                            game->getNbTries(),
+                                            m_Clients[client].getId(),
+                                            GameInfo::s_minValue,
+                                            GameInfo::s_minValue,
+                                            HistoryRecordState_Lost
+                                            );
+                    }
                     client->sendTextMessage(MsgFactory::createGameoverLoserMsg(
                                                 gameid,
                                                 playerid,
@@ -217,7 +249,7 @@ void Server::onProcessMsg(QString msg)
                                                 game->getTotalMs(),
                                                 game->getNbTries(),
                                                 game->getSecretNumber(),
-                                                1));
+                                                0));
 
                     if(m_Clients[client].getName() == "auto")
                     {
@@ -281,9 +313,26 @@ void Server::onPlayerDisconnect()
 
         m_PlayerManager.removePlayer(m_Clients[client].getId());
         m_Clients.erase(client);
+
         GameInfo * game = m_GameManager.getPlayerGame(m_Clients[client].getId());
         if(game)
         {
+
+            if(m_Clients[client].getName() != "auto" && m_Clients[client].getName() != "")
+            {
+                HistoryStorage::add(m_Clients[client].getName(),
+                                    game->getStartTime(),
+                                    game->getTotalMs(),
+                                    game->getEndTime(),
+                                    m_Clients[client].getIp(),
+                                    m_Clients[client].getPort(),
+                                    game->getNbTries(),
+                                    m_Clients[client].getId(),
+                                    GameInfo::s_minValue,
+                                    GameInfo::s_minValue,
+                                    HistoryRecordState_Left
+                                    );
+            }
             m_GameManager.removeGame(game->getGameId());
         }
         client->deleteLater();

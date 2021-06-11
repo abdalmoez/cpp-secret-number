@@ -220,7 +220,7 @@ void GameClient::onMsgReceived(QString msg)
         case RC_GAMEOVER_WINNER:
         {
             QString content = "================== You Win ==================\n";
-            if(jsonObject.contains("rank") && jsonObject["rank"].isDouble())
+            if(jsonObject.contains("rank") && jsonObject["rank"].isDouble() && ((uint32_t)jsonObject["rank"].toDouble())>0)
             {
                 content += "\n Your rank: #" + QString::number((uint32_t)jsonObject["rank"].toDouble());
             }

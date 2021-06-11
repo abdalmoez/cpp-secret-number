@@ -5,7 +5,6 @@
 #include <map>
 
 const uint32_t INVALID_PLAYER_ID = 0xFFFFFFFF;
-const uint32_t MAX_PLAYERS = 1000;
 
 
 class PlayerManager
@@ -13,6 +12,9 @@ class PlayerManager
     public:
         PlayerInfo* addPlayer(QString ip, uint32_t port);
         void removePlayer(uint32_t playerid);
+
+
+        static uint32_t s_maxPlayers;
 
     protected:
         uint32_t getNextID();

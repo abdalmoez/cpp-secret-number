@@ -2,6 +2,7 @@
 #include <QtCore/QCommandLineParser>
 #include <QtCore/QCommandLineOption>
 
+#include "HistoryStorage.h"
 #include <iostream>
 #include <QFile>
 
@@ -26,8 +27,7 @@ void fileLog(QString str)
 void serverLog(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     QString time = QDateTime::currentDateTimeUtc().toString("yyyy-MM-dd hh:mm:ss.zzz");
-    QString content="";
-    QByteArray localMsg = msg.toLocal8Bit();
+    QString content=context.file;
 
     switch (type)
     {
@@ -90,6 +90,10 @@ int main(int argc, char *argv[])
     QCommandLineOption verboseOption(QStringList() << "v" << "verbose",
              QCoreApplication::translate("main", "Verbose mode. Prints out more information."));
     parser.addOption(verboseOption);
+    QCommandLineOption maxPlayersOption(QStringList() << "m" << "max-players",
+             QCoreApplication::translate("main", "Max number of players to support."),
+             QCoreApplication::translate("main", "max-players"), QLatin1String("1000"));
+    parser.addOption(maxPlayersOption);
     QCommandLineOption portOption(QStringList() << "p" << "port",
             QCoreApplication::translate("main", "The port the server should use. You will need to Port Forward in order for players to join your server from outside your LAN. (default: 4242)"),
             QCoreApplication::translate("main", "port"), QLatin1String("4242"));
@@ -97,10 +101,16 @@ int main(int argc, char *argv[])
     parser.process(a);
     int limit = parser.value(limitOption).toInt();
     int port  = parser.value(portOption).toInt();
+    int max_players  = parser.value(maxPlayersOption).toInt();
     auto bounds_param = parser.value(boundsOption).split(",");
 
     verbose = parser.isSet(verboseOption);
 
+    if(max_players<=0)
+    {
+        qFatal("Invalid max players argument");
+        return 1;
+    }
     if(bounds_param.size()!=2)
     {
         qFatal("Invalid bounds argument");
@@ -120,6 +130,8 @@ int main(int argc, char *argv[])
     GameInfo::s_minValue = bounds_param[0].toInt();
     GameInfo::s_maxValue = bounds_param[1].toInt();
     GameManager::s_maxTries = limit;
+    PlayerManager::s_maxPlayers = max_players;
+    HistoryStorage::load();
 
     Server server(port);
     QObject::connect(&server, &Server::closeApp, &a, &QCoreApplication::quit);

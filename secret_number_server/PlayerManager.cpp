@@ -1,5 +1,7 @@
 #include "PlayerManager.h"
 
+uint32_t PlayerManager::s_maxPlayers = 1000;
+
 PlayerInfo* PlayerManager::addPlayer(QString ip, uint32_t port)
 {
     uint32_t playerid = getNextID();
@@ -25,7 +27,7 @@ void PlayerManager::removePlayer(uint32_t playerid)
 
 uint32_t PlayerManager::getNextID()
 {
-    if(m_Players.size() >= MAX_PLAYERS)
+    if(m_Players.size() >= s_maxPlayers)
     {
         return INVALID_PLAYER_ID;
     }
