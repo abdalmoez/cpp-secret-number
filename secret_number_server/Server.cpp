@@ -17,7 +17,7 @@ void Server::start()
 {
     if (m_WebSocketServer.listen(QHostAddress::Any, m_Port))
     {
-        qInfo() << "[2021/04/09 13:29:22] Server started on port " << m_Port;
+        qInfo() << "Server started on port " << m_Port;
 
         connect(&m_WebSocketServer, &QWebSocketServer::newConnection, this, &Server::onPlayerConnect);
 
@@ -25,14 +25,14 @@ void Server::start()
     }
     else
     {
-        qFatal("[2021/04/09 13:29:22] Failed to started server");
+        qFatal("Failed to started server");
         emit closeApp();
     }
 }
 
 void Server::stop()
 {
-    qInfo("[2021/04/09 13:29:22] Stoping the server");
+    qInfo("Stoping the server");
     m_WebSocketServer.close();
     m_Clients.clear();
     emit closeApp();
@@ -68,7 +68,7 @@ void Server::onPlayerConnect()
     socket->sendTextMessage(MsgFactory::createAcceptedConnectionMsg(m_Clients[socket].getId(), m_Clients[socket].getLastLogin()));
 
 
-    qInfo() << "[2021/04/09 13:29:22] [join] " << name << " has joined the server (" << m_Clients[socket].getId() << ":" << ip << ")";
+    qInfo() << "[join] " << name << " has joined the server (" << m_Clients[socket].getId() << ":" << ip << ")";
 
 
 }
@@ -77,7 +77,7 @@ void Server::onProcessMsg(QString msg)
 {
     QWebSocket *client = qobject_cast<QWebSocket *>(sender());
 
-    qDebug() << "Message received:" << msg;
+    qDebug() << "[Msg]" << msg;
 
     if (client)
     {

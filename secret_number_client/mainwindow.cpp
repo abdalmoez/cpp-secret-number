@@ -82,6 +82,7 @@ void MainWindow::showGamePanel(int32_t max_value, int32_t min_value)
     ui->sendAnswerBtn->setVisible(!ui->botState->isChecked());
     ui->answerInput->setEnabled(!ui->botState->isChecked());
     ui->answerFrame->setVisible(true);
+    ui->answerInput->setFocus();
 }
 
 void MainWindow::showLoginPanel()

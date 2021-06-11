@@ -3,26 +3,76 @@
 #include <QtCore/QCommandLineOption>
 
 #include <iostream>
+#include <QFile>
 
 #include "PlayerManager.h"
 #include "Server.h"
 
-void test1()
+bool verbose=false;
+void fileLog(QString str)
 {
-    PlayerManager pm;
-    auto p0 = pm.addPlayer("132.15.158.12", 2352);
-    auto p1 = pm.addPlayer("132.15.158.13", 2352);
-    auto p2 = pm.addPlayer("132.15.158.14", 2352);
-    std::cout<<*p0<<std::endl;
-    std::cout<<*p1<<std::endl;
-    std::cout<<*p2<<std::endl;
-    pm.removePlayer(1);
-    p1 = pm.addPlayer("132.15.158.15", 2352);
-    std::cout<<*p1<<std::endl;
+    QFile f(qApp->applicationDirPath()+"/server.log");
+
+    if (f.open(QIODevice::WriteOnly | QIODevice::Append))
+    {
+        QTextStream out(&f);
+        out << str;
+    }
+    else
+    {
+        fprintf(stderr, "Cannot open log file");
+    }
+}
+void serverLog(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+    QString time = QDateTime::currentDateTimeUtc().toString("yyyy-MM-dd hh:mm:ss.zzz");
+    QString content="";
+    QByteArray localMsg = msg.toLocal8Bit();
+
+    switch (type)
+    {
+        case QtDebugMsg:
+            content = QString("[%1] [Debug] %2\n").arg(time, msg);
+            if(verbose)
+            {
+                fprintf(stdout, content.toUtf8().data());
+                fflush(stdout);
+                fileLog(content);
+            }
+            break;
+        case QtInfoMsg:
+            content = QString("[%1] [Info] %2\n").arg(time, msg);
+            if(verbose)
+            {
+                fprintf(stdout, content.toUtf8().data());
+                fflush(stdout);
+            }
+            fileLog(content);
+            break;
+        case QtWarningMsg:
+            content = QString("[%1] [Warning] %2\n").arg(time, msg);
+            fileLog(content);
+            fprintf(stderr, content.toUtf8().data());
+            fflush(stderr);
+            break;
+        case QtCriticalMsg:
+            content = QString("[%1] [Critical] %2\n").arg(time, msg);
+            fileLog(content);
+            fprintf(stderr, content.toUtf8().data());
+            fflush(stderr);
+            break;
+        case QtFatalMsg:
+            content = QString("[%1] [Fatal] %2\n").arg(time, msg);
+            fileLog(content);
+            fprintf(stderr, content.toUtf8().data());
+            fflush(stderr);
+            abort();
+    }
 }
 
 int main(int argc, char *argv[])
 {
+    qInstallMessageHandler(serverLog);
     QCoreApplication a(argc, argv);
 
     QCommandLineParser parser;
@@ -37,6 +87,9 @@ int main(int argc, char *argv[])
              QCoreApplication::translate("main", "Bounds of the secret number x,y"),
              QCoreApplication::translate("main", "bounds"), QLatin1String("1,100"));
     parser.addOption(boundsOption);
+    QCommandLineOption verboseOption(QStringList() << "v" << "verbose",
+             QCoreApplication::translate("main", "Verbose mode. Prints out more information."));
+    parser.addOption(verboseOption);
     QCommandLineOption portOption(QStringList() << "p" << "port",
             QCoreApplication::translate("main", "The port the server should use. You will need to Port Forward in order for players to join your server from outside your LAN. (default: 4242)"),
             QCoreApplication::translate("main", "port"), QLatin1String("4242"));
@@ -45,6 +98,8 @@ int main(int argc, char *argv[])
     int limit = parser.value(limitOption).toInt();
     int port  = parser.value(portOption).toInt();
     auto bounds_param = parser.value(boundsOption).split(",");
+
+    verbose = parser.isSet(verboseOption);
 
     if(bounds_param.size()!=2)
     {
