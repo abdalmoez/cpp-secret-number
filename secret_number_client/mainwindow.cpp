@@ -149,9 +149,9 @@ void MainWindow::on_sendAnswerBtn_clicked()
     }
 }
 
-void MainWindow::on_botState_stateChanged(int arg1)
+void MainWindow::on_botState_stateChanged(int state)
 {
-    if(ui->botState->isChecked())
+    if(state)
     {
         ui->nameInput->setEnabled(false);
         ui->botDifficulty->setEnabled(true);

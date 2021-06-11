@@ -14,8 +14,8 @@
 #define RC_CANNOT_CREATE_GAME      0x7003
 #define RC_FORBIDDEN_CONTENT       0x7004
 
-#define RC_KICKED                  0x8000
-#define RC_BANNED                  0x8001
+#define RC_KICKED                  0x6000
+#define RC_BANNED                  0x6001
 
 #define REQUEST_NEW_GAME           0x5000
 #define REQUEST_ANSWER             0x5001

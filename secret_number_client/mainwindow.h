@@ -32,7 +32,7 @@ private slots:
     void on_sendAnswerBtn_clicked();
     void lookedUp(const QHostInfo &host);
 
-    void on_botState_stateChanged(int arg1);
+    void on_botState_stateChanged(int state);
 
 private:
     Ui::MainWindow *ui;
