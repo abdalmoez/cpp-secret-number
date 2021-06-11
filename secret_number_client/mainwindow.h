@@ -25,7 +25,7 @@ public:
     QString getPlayerName();
     Bot* getBot();
     void setAnswerInputValue(int32_t value);
-
+    void onEndGame();
 private slots:
     void on_pushButton_clicked();
 

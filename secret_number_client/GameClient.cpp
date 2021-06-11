@@ -71,7 +71,7 @@ void GameClient::onMsgReceived(QString msg)
         case RC_SERVER_IS_FULL:
         {
             QMessageBox messageBox;
-            messageBox.information(0,"Server","The server is full try again later.");
+            messageBox.information(m_parent,"Server","The server is full try again later.");
             messageBox.show();
             m_webSocket.close();
             break;
@@ -84,7 +84,7 @@ void GameClient::onMsgReceived(QString msg)
         case RC_KICKED:
         {
             QMessageBox messageBox;
-            messageBox.critical(0,"Alert","You have been kicked from the server!");
+            messageBox.critical(m_parent,"Alert","You have been kicked from the server!");
             messageBox.show();
             m_webSocket.close();
             break;
@@ -92,7 +92,7 @@ void GameClient::onMsgReceived(QString msg)
         case RC_BANNED:
         {
             QMessageBox messageBox;
-            messageBox.critical(0,"Alert","You have been banned from the server!");
+            messageBox.critical(m_parent,"Alert","You have been banned from the server!");
             messageBox.show();
             m_webSocket.close();
             break;
@@ -179,11 +179,11 @@ void GameClient::onMsgReceived(QString msg)
 
                 if(jsonObject.contains("total_tries") && jsonObject["total_tries"].isDouble())
                 {
-                    messageBox.warning(0,"Server","Invalid answer! (total tries: " + QString::number(jsonObject["total_tries"].toDouble()) +")"+state);
+                    messageBox.warning(m_parent,"Server","Invalid answer! (total tries: " + QString::number(jsonObject["total_tries"].toDouble()) +")"+state);
                 }
                 else
                 {
-                    messageBox.warning(0,"Server","Invalid answer!"+state);
+                    messageBox.warning(m_parent,"Server","Invalid answer!"+state);
                 }
                 messageBox.show();
             }
@@ -209,9 +209,10 @@ void GameClient::onMsgReceived(QString msg)
             }
 
             QMessageBox messageBox;
-            messageBox.critical(0,"GameOver", content);
+            messageBox.critical(m_parent,"GameOver", content);
             messageBox.show();
             m_currentGameId = INVALID_GAME_ID;
+            m_parent->onEndGame();
             break;
         }
         case RC_GAMEOVER_WINNER:
@@ -235,9 +236,10 @@ void GameClient::onMsgReceived(QString msg)
                 content += "\n Total tries: " + QString::number((uint32_t)jsonObject["total_tries"].toDouble());
             }
             QMessageBox messageBox;
-            messageBox.information(0,"GameOver", content);
+            messageBox.information(m_parent,"GameOver", content);
             messageBox.show();
             m_currentGameId = INVALID_GAME_ID;
+            m_parent->onEndGame();
             break;
         }
         default:

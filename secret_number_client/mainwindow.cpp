@@ -32,7 +32,18 @@ QString MainWindow::getPlayerName()
         return ui->nameInput->text();
     }
 }
-
+void MainWindow::onEndGame()
+{
+    QMessageBox::StandardButton reply = QMessageBox::question(this, "Server", "Do you wan't to start new game?", QMessageBox::Yes|QMessageBox::No);
+    if (reply == QMessageBox::Yes)
+    {
+        client->sendMsg(MsgFactory::createNewGameRequest(client->getPlayerId(), getPlayerName()));
+    }
+    else
+    {
+        QApplication::quit();
+    }
+}
 Bot* MainWindow::getBot()
 {
     if(!ui->botState->isChecked())
@@ -84,7 +95,7 @@ void MainWindow::lookedUp(const QHostInfo &host)
     {
 
         QMessageBox messageBox;
-        messageBox.critical(0,"Error","Cannot reach host!\n Reason:"+host.errorString());
+        messageBox.critical(this,"Error","Cannot reach host!\n Reason:"+host.errorString());
         messageBox.show();
         return;
     }
@@ -103,14 +114,14 @@ void MainWindow::on_pushButton_clicked()
     if(!ui->botState->isChecked() && ui->nameInput->text().length() < 3)
     {
         QMessageBox messageBox;
-        messageBox.critical(0,"Error","Invalid name");
+        messageBox.critical(this,"Error","Invalid name");
         messageBox.show();
         return;
     }
     if(client != nullptr)
     {
         QMessageBox messageBox;
-        messageBox.critical(0,"Error","Client already connected to the server!");
+        messageBox.critical(this,"Error","Client already connected to the server!");
         messageBox.show();
         return;
     }
@@ -124,7 +135,7 @@ void MainWindow::on_sendAnswerBtn_clicked()
     if(client == nullptr)
     {
         QMessageBox messageBox;
-        messageBox.critical(0,"Error","You are not connected to any server!");
+        messageBox.critical(this,"Error","You are not connected to any server!");
         messageBox.show();
         return;
     }
