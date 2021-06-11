@@ -26,7 +26,7 @@ The winner player can be ranked only with other players that solved the game wit
 
 ### secret_number_client
 Login:
-[![N|Solid](https://github.com/abdalmoez/cpp-secret-number/blob/master/ss.png?raw=true)]()
+[![N|Solid](https://github.com/abdalmoez/cpp-secret-number/blob/master/ss.jpg?raw=true)]()
 Player can chose use bots to find the secret numbers or play by him self.
 #### Bots
 There is 3 levels of bots that player can use Newbie, Medium and Master. Each of them use different search method to find The secret number.
