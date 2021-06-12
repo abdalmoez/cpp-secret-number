@@ -2,7 +2,9 @@
 #define MSGFACTORY_H
 
 #include <QString>
+#include <vector>
 #include "MsgTypes.h"
+#include "HistoryRecord.h"
 
 class MsgFactory
 {
@@ -20,7 +22,8 @@ public:
                                           uint64_t total_time,
                                           int32_t  total_tries,
                                           int32_t  secret_number,
-                                          uint64_t rank);
+                                          uint64_t rank,
+                                          std::vector<HistoryRecord> top_players);
 
     static QString createGameoverWinnerMsg(uint32_t gameid,
                                            uint32_t playerid,
@@ -29,7 +32,8 @@ public:
                                            uint64_t total_time,
                                            int32_t  total_tries,
                                            int32_t  secret_number,
-                                           uint64_t rank);
+                                           uint64_t rank,
+                                           std::vector<HistoryRecord>& top_players);
 
     static QString createErrorMsg(uint16_t rc);
 };

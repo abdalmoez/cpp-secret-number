@@ -1,7 +1,9 @@
 #include "MsgFactory.h"
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 #include <QVariant>
+#include <QDebug>
 
 QString MsgFactory::createGameCreatedMsg(uint32_t gameid, uint32_t playerid, uint64_t start_time, int32_t max, int32_t min)
 {
@@ -38,7 +40,8 @@ QString MsgFactory::createGameoverLoserMsg(uint32_t gameid,
                                            uint64_t total_time,
                                            int32_t  total_tries,
                                            int32_t  secret_number,
-                                           uint64_t rank)
+                                           uint64_t rank,
+                                           std::vector<HistoryRecord> top_players)
 {
 
     QJsonObject recordObject;
@@ -51,6 +54,23 @@ QString MsgFactory::createGameoverLoserMsg(uint32_t gameid,
     recordObject.insert("total_tries"   , QJsonValue::fromVariant(total_tries));
     recordObject.insert("secret_number" , QJsonValue::fromVariant(secret_number));
     recordObject.insert("rank"          , QJsonValue::fromVariant(rank));
+
+    QJsonArray top_array;
+    int rank_index = 0;
+    for(auto it=top_players.begin();it!=top_players.end();it++)
+    {
+        rank_index++;
+        QJsonObject o;
+        o.insert("rank"         , QJsonValue::fromVariant(rank_index));
+        o.insert("playername"   , QJsonValue::fromVariant(it->getPlayerName()));
+        o.insert("total_time"   , QJsonValue::fromVariant(it->getTimeMs()));
+        o.insert("total_tries"  , QJsonValue::fromVariant(it->getNbTries()));
+        top_array.append(o);
+    }
+    if(top_array.size()>0)
+    {
+        recordObject.insert("top_players", top_array);
+    }
     QJsonDocument doc(recordObject);
 
     return doc.toJson();
@@ -62,7 +82,8 @@ QString MsgFactory::createGameoverWinnerMsg(uint32_t gameid,
                                             uint64_t total_time,
                                             int32_t  total_tries,
                                             int32_t  secret_number,
-                                            uint64_t rank)
+                                            uint64_t rank,
+                                            std::vector<HistoryRecord>& top_players)
 {
     QJsonObject recordObject;
     recordObject.insert("type"          , RC_GAMEOVER_WINNER);
@@ -74,6 +95,27 @@ QString MsgFactory::createGameoverWinnerMsg(uint32_t gameid,
     recordObject.insert("total_tries"   , QJsonValue::fromVariant(total_tries));
     recordObject.insert("secret_number" , QJsonValue::fromVariant(secret_number));
     recordObject.insert("rank"          , QJsonValue::fromVariant(rank));
+
+    QJsonArray top_array;
+    int rank_index = 0;
+
+    for(auto it=top_players.begin();it!=top_players.end();it++)
+    {
+        qDebug() << "top_players:"<<it->toJson();
+        rank_index++;
+        QJsonObject o;
+        o.insert("rank", rank_index);
+        o.insert("rank"         , QJsonValue::fromVariant(rank_index));
+        o.insert("playername"   , QJsonValue::fromVariant(it->getPlayerName()));
+        o.insert("total_time"   , QJsonValue::fromVariant(it->getTimeMs()));
+        o.insert("total_tries"  , QJsonValue::fromVariant(it->getNbTries()));
+        qDebug() << o;
+        top_array.append(o);
+    }
+    if(top_array.size()>0)
+    {
+        recordObject.insert("top_players", top_array);
+    }
     QJsonDocument doc(recordObject);
 
     return doc.toJson();

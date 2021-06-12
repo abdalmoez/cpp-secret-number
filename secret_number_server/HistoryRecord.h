@@ -14,6 +14,20 @@ enum HistoryRecordState
 class HistoryRecord
 {
 public:
+    HistoryRecord()
+        : m_playerName("")
+        , m_start(0)
+        , m_timeMs(0)
+        , m_end(0)
+        , m_ip("")
+        , m_port(0)
+        , m_nbTries(0)
+        , m_playerId(0)
+        , m_min(0)
+        , m_max(0)
+        , m_status(HistoryRecordState_Win)
+    {}
+
     HistoryRecord(
             QString              player_name,
             uint64_t             start,
@@ -39,19 +53,19 @@ public:
         , m_status(status)
     {}
 
-    QString              getPlayerName () { return m_playerName; }
-    uint64_t             getStart      () { return m_start;      }
-    uint64_t             getTimeMs     () { return m_timeMs;     }
-    uint64_t             getEnd        () { return m_end;        }
-    QString              getIp         () { return m_ip;         }
-    uint16_t             getPort       () { return m_port;       }
-    uint32_t             getNbTries    () { return m_nbTries;    }
-    uint32_t             getPlayerId   () { return m_playerId;   }
-    uint32_t             getMin        () { return m_min;        }
-    uint32_t             getMax        () { return m_max;        }
-    HistoryRecordState   getStatus     () { return m_status;     }
+    QString              getPlayerName () const { return m_playerName; }
+    uint64_t             getStart      () const { return m_start;      }
+    uint64_t             getTimeMs     () const { return m_timeMs;     }
+    uint64_t             getEnd        () const { return m_end;        }
+    QString              getIp         () const { return m_ip;         }
+    uint16_t             getPort       () const { return m_port;       }
+    uint32_t             getNbTries    () const { return m_nbTries;    }
+    uint32_t             getPlayerId   () const { return m_playerId;   }
+    uint32_t             getMin        () const { return m_min;        }
+    uint32_t             getMax        () const { return m_max;        }
+    HistoryRecordState   getStatus     () const { return m_status;     }
 
-    QJsonObject toJson();
+    QJsonObject toJson() const;
 private:
     QString              m_playerName;
     uint64_t             m_start;

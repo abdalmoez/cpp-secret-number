@@ -2,6 +2,7 @@
 #include "MsgFactory.h"
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 #include <QMessageBox>
 #include "mainwindow.h"
 #include <QApplication>
@@ -207,6 +208,27 @@ void GameClient::onMsgReceived(QString msg)
             {
                 content += "\n Total tries: " + QString::number((uint32_t)jsonObject["total_tries"].toDouble());
             }
+            if(jsonObject.contains("top_players") && jsonObject["top_players"].isArray())
+            {
+                QJsonArray top_players = jsonObject["top_players"].toArray();
+                content += "\n\n================ Top Players ================\n";
+                for(auto it = top_players.begin();it!=top_players.end();it++)
+                {
+                    QJsonObject pl=it->toObject();
+
+                    if(pl.contains("rank") && pl["rank"].isDouble() &&
+                      pl.contains("playername") && pl["playername"].isString() &&
+                      pl.contains("total_time") && pl["total_time"].isDouble() &&
+                      pl.contains("total_tries") && pl["total_tries"].isDouble())
+                   {
+                       uint64_t total_ms = (uint64_t)pl["total_time"].toDouble();
+                       content += "\n  #"+QString::number((uint64_t)pl["rank"].toDouble())+
+                               " "+pl["playername"].toString()+" Time: "+  QString::number(total_ms/1000)+"."+QString::number(total_ms%1000)+" ms"
+                               " Tries: "+QString::number((uint32_t)pl["total_tries"].toDouble());
+                   }
+                }
+            }
+
 
             {
                 QMessageBox messageBox;
@@ -237,11 +259,33 @@ void GameClient::onMsgReceived(QString msg)
             {
                 content += "\n Total tries: " + QString::number((uint32_t)jsonObject["total_tries"].toDouble());
             }
+            if(jsonObject.contains("top_players") && jsonObject["top_players"].isArray())
+            {
+                QJsonArray top_players = jsonObject["top_players"].toArray();
+                content += "\n\n================ Top Players ================\n";
+                for(auto it = top_players.begin();it!=top_players.end();it++)
+                {
+                    QJsonObject pl=it->toObject();
+
+                    if(pl.contains("rank") && pl["rank"].isDouble() &&
+                      pl.contains("playername") && pl["playername"].isString() &&
+                      pl.contains("total_time") && pl["total_time"].isDouble() &&
+                      pl.contains("total_tries") && pl["total_tries"].isDouble())
+                   {
+                       uint64_t total_ms = (uint64_t)pl["total_time"].toDouble();
+                       content += "\n  #"+QString::number((uint64_t)pl["rank"].toDouble())+
+                               " "+pl["playername"].toString()+" Time: "+  QString::number(total_ms/1000)+"."+QString::number(total_ms%1000)+" ms"
+                               " Tries: "+QString::number((uint32_t)pl["total_tries"].toDouble());
+                   }
+                }
+            }
+
             {
                 QMessageBox messageBox;
                 messageBox.information(m_parent,"GameOver", content);
                 messageBox.show();
             }
+
             m_currentGameId = INVALID_GAME_ID;
             m_parent->onEndGame();
             break;

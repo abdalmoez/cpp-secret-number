@@ -2,7 +2,7 @@
 #include <QVariant>
 
 
-QJsonObject HistoryRecord::toJson()
+QJsonObject HistoryRecord::toJson() const
 {
     QJsonObject recordObject;
     recordObject.insert("playerid"    , QJsonValue::fromVariant(m_playerId));

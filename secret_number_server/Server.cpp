@@ -195,7 +195,8 @@ void Server::onProcessMsg(QString msg)
                                                 game->getTotalMs(),
                                                 game->getNbTries(),
                                                 game->getSecretNumber(),
-                                                rank));
+                                                rank,
+                                                HistoryStorage::getTop5Players()));
 
                     if(m_Clients[client].getName() == "auto")
                     {
@@ -249,7 +250,8 @@ void Server::onProcessMsg(QString msg)
                                                 game->getTotalMs(),
                                                 game->getNbTries(),
                                                 game->getSecretNumber(),
-                                                0));
+                                                0,
+                                                HistoryStorage::getTop5Players()));
 
                     if(m_Clients[client].getName() == "auto")
                     {

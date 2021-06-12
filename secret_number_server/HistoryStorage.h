@@ -19,14 +19,14 @@ public:
             uint32_t             playerid,
             int32_t              min,
             int32_t              max,
-            HistoryRecordState   status)
-    {
-        m_records.push_back(HistoryRecord(player_name,start,time_ms,end,ip,port,nb_tries,playerid, min, max, status));
-        HistoryStorage::save();
-        return &m_records[m_records.size()-1];
-    }
+            HistoryRecordState   status);
+
     static void save();
     static void load();
+    static std::vector<HistoryRecord>& getTop5Players()
+    {
+        return m_top5Records;
+    }
     static uint64_t getRank(HistoryRecord* record)
     {
         if(record == nullptr)
@@ -46,8 +46,10 @@ public:
         }
         return rank;
     }
+
 private:
     static std::vector<HistoryRecord> m_records;
+    static std::vector<HistoryRecord> m_top5Records;
 };
 
 #endif // HISTORYSTORAGE_H

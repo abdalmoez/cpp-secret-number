@@ -6,6 +6,46 @@
 #include <QCoreApplication>
 
 std::vector<HistoryRecord> HistoryStorage::m_records;
+std::vector<HistoryRecord> HistoryStorage::m_top5Records;
+
+HistoryRecord* HistoryStorage::add(
+        QString              player_name,
+        uint64_t             start,
+        uint64_t             time_ms,
+        uint64_t             end,
+        QString              ip,
+        uint16_t             port,
+        uint32_t             nb_tries,
+        uint32_t             playerid,
+        int32_t              min,
+        int32_t              max,
+        HistoryRecordState   status)
+{
+    m_records.push_back(HistoryRecord(player_name,start,time_ms,end,ip,port,nb_tries,playerid, min, max, status));
+    HistoryStorage::save();
+    if(status == HistoryRecordState_Win)
+    {
+        bool added=false;
+        for(auto it=m_top5Records.begin(); it!=m_top5Records.end();it++)
+        {
+            if(time_ms < it->getTimeMs())
+            {
+                m_top5Records.insert(it, m_records[m_records.size()-1]);
+                added = true;
+                break;
+            }
+        }
+        if(!added)
+        {
+            m_top5Records.insert(m_top5Records.end(), m_records[m_records.size()-1]);
+        }
+        if(m_top5Records.size()>5)
+        {
+            m_top5Records.resize(5);
+        }
+    }
+    return &m_records[m_records.size()-1];
+}
 
 void HistoryStorage::save()
 {
@@ -82,5 +122,27 @@ void HistoryStorage::load()
                                           min,
                                           max,
                                           status));
+        if(status == HistoryRecordState_Win)
+        {
+            bool added=false;
+            for(auto it=m_top5Records.begin(); it!=m_top5Records.end();it++)
+            {
+                if(time_ms < it->getTimeMs())
+                {
+                    m_top5Records.insert(it, m_records[m_records.size()-1]);
+                    added = true;
+                    break;
+                }
+            }
+            if(!added)
+            {
+                m_top5Records.insert(m_top5Records.end(), m_records[m_records.size()-1]);
+            }
+            if(m_top5Records.size()>5)
+            {
+                m_top5Records.resize(5);
+            }
+        }
+
     }
 }
